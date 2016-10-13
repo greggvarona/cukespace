@@ -6,16 +6,20 @@
   <parent>
     <groupId>com.github.cukespace</groupId>
     <artifactId>cukespace-parent</artifactId>
-    <version>1.6.4-SNAPSHOT</version>
+    <version>1.6.4-CUSTOM</version>
   </parent>
 
   <artifactId>cukespace-core</artifactId>
+  <version>1.6.4-CUSTOM</version>
   <name>Cukes in Space!</name>
 
   <properties>
     <asciidoctorj.version>1.5.4.1</asciidoctorj.version>
     <asciidoctorj-pdf.version>1.5.0-alpha.11</asciidoctorj-pdf.version>
     <cukedoctor.version>0.4.0</cukedoctor.version>
+    <cukedoctor.version>0.4.0</cukedoctor.version>
+    <testng.version>6.9.10</testng.version>
+    <org.jboss.arquillian.version>1.1.11.Final</org.jboss.arquillian.version>
   </properties>
 
   <dependencies>
@@ -23,6 +27,12 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.testng</groupId>
+      <artifactId>testng</artifactId>
+      <version>${testng.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -38,6 +48,12 @@
     <dependency>
       <groupId>info.cukes</groupId>
       <artifactId>cucumber-junit</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>info.cukes</groupId>
+      <artifactId>cucumber-testng</artifactId>
+      <version>1.2.5</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
@@ -164,6 +180,19 @@
       <groupId>org.jboss.arquillian.junit</groupId>
       <artifactId>arquillian-junit-container</artifactId>
       <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.arquillian.testng</groupId>
+      <artifactId>arquillian-testng-container</artifactId>
+      <version>${org.jboss.arquillian.version}</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.jboss.shrinkwrap</groupId>
+          <artifactId>shrinkwrap-impl-base</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>

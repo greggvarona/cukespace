@@ -1,10 +1,6 @@
 package cucumber.runtime.arquillian.lifecycle;
 
-import cucumber.api.java.en.And;
-import cucumber.api.java.en.But;
-import cucumber.api.java.en.Given;
-import cucumber.api.java.en.Then;
-import cucumber.api.java.en.When;
+import cucumber.api.java.en.*;
 import cucumber.runtime.arquillian.shared.ClientServerFiles;
 import cucumber.runtime.arquillian.stream.NotCloseablePrintStream;
 import cucumber.runtime.io.MultiLoader;
@@ -19,11 +15,7 @@ import org.jboss.arquillian.test.spi.event.suite.AfterClass;
 import org.jboss.arquillian.test.spi.event.suite.Before;
 import org.jboss.arquillian.test.spi.event.suite.BeforeClass;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PrintStream;
+import java.io.*;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -126,7 +118,7 @@ public class CucumberLifecycle {
 
             final ClassLoader loader = Thread.currentThread().getContextClassLoader();
             final ResourceLoaderClassFinder finder = new ResourceLoaderClassFinder(new MultiLoader(loader), loader);
-            CUCUMBER_ANNOTATIONS.addAll(finder.getDescendants(Annotation.class, "cucumber.api"));
+            //CUCUMBER_ANNOTATIONS.addAll(finder.getDescendants(Annotation.class, "cucumber.api"));
 
             if (CUCUMBER_ANNOTATIONS.isEmpty()) {
                 return Arrays.asList(Given.class, When.class, Then.class, And.class, But.class);

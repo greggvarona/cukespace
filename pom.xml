@@ -13,7 +13,7 @@
   <groupId>com.github.cukespace</groupId>
   <artifactId>cukespace-parent</artifactId>
   <packaging>pom</packaging>
-  <version>1.6.4-SNAPSHOT</version>
+  <version>1.6.4-CUSTOM</version>
 
   <name>Cukes in Space! Parent</name>
   <url>https://github.com/lmcgrath/cukespace</url>
@@ -26,7 +26,7 @@
 
   <modules>
     <module>core</module>
-    <module>examples</module>
+    <!--<module>examples</module>-->
   </modules>
 
   <properties>
@@ -43,6 +43,7 @@
     <cucumber-jvm.version>1.2.5</cucumber-jvm.version>
     <hamcrest.version>1.1</hamcrest.version>
     <junit.version>4.11</junit.version>
+    <testng.version>6.9.10</testng.version>
     <maven-compiler.version>3.1</maven-compiler.version>
     <maven-jar.version>2.3.1</maven-jar.version>
     <maven-surefire.version>2.19.1</maven-surefire.version>
@@ -73,6 +74,18 @@
         <artifactId>arquillian-junit-container</artifactId>
         <version>${arquillian.version}</version>
         <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.arquillian.testng</groupId>
+        <artifactId>arquillian-testng-container</artifactId>
+        <version>${arquillian.version}</version>
+        <scope>compile</scope>
+        <exclusions>
+          <exclusion>
+            <groupId>org.jboss.shrinkwrap</groupId>
+            <artifactId>shrinkwrap-impl-base</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
 
       <dependency>
@@ -112,12 +125,30 @@
         <version>${cucumber-jvm.version}</version>
         <scope>test</scope>
       </dependency>
+      <dependency>
+        <groupId>info.cukes</groupId>
+        <artifactId>cucumber-testng</artifactId>
+        <version>${cucumber-jvm.version}</version>
+        <scope>compile</scope>
+      </dependency>
 
       <dependency>
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
         <version>${junit.version}</version>
         <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.testng</groupId>
+        <artifactId>testng</artifactId>
+        <version>${testng.version}</version>
+        <scope>provided</scope>
+        <exclusions>
+          <exclusion>
+            <groupId>com.beust</groupId>
+            <artifactId>jcommander</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
 
       <dependency>

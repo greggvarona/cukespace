@@ -2,15 +2,7 @@ package cucumber.runtime.arquillian.backend;
 
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
-import cucumber.runtime.Backend;
-import cucumber.runtime.ClassFinder;
-import cucumber.runtime.CucumberException;
-import cucumber.runtime.DuplicateStepDefinitionException;
-import cucumber.runtime.Glue;
-import cucumber.runtime.HookDefinition;
-import cucumber.runtime.StepDefinition;
-import cucumber.runtime.UnreportedStepExecutor;
-import cucumber.runtime.Utils;
+import cucumber.runtime.*;
 import cucumber.runtime.arquillian.api.Lambda;
 import cucumber.runtime.arquillian.lifecycle.CucumberLifecycle;
 import cucumber.runtime.java.JavaBackend;
@@ -23,15 +15,12 @@ import gherkin.formatter.model.Step;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 import static cucumber.runtime.arquillian.shared.ClassLoaders.load;
+import static java.lang.String.format;
 
 // patched to use the resource loader defined by this extension
 // the best would probably to update cucumber-core to handle
@@ -46,6 +35,8 @@ public class ArquillianBackend extends JavaBackend implements Backend {
     private final Collection<Class<?>> glues = new ArrayList<Class<?>>();
     private Glue glue;
     private GlueType glueType = GlueType.UNKNOWN;
+
+    private static Logger LOGGER = Logger.getLogger(ArquillianBackend.class.getName());
 
     public ArquillianBackend() { // no-op constructor but we need to be JavaBackend for java8 integration
         super(null, new ClassFinder() {
@@ -117,8 +108,10 @@ public class ArquillianBackend extends JavaBackend implements Backend {
     }
 
     private boolean readFromJava(Map.Entry<Class<?>, Object> clazz) {
+        LOGGER.info(format("Reading from clazz: %s", clazz.getKey().getName()));
         boolean found = false;
         for (final Method method : clazz.getKey().getMethods()) {
+            LOGGER.info(format("Getting cucumber annotations. Size: %s", CucumberLifecycle.cucumberAnnotations()));
             for (final Class<? extends Annotation> cucumberAnnotationClass : CucumberLifecycle.cucumberAnnotations()) {
                 final Annotation annotation = method.getAnnotation(cucumberAnnotationClass);
                 if (annotation != null) {

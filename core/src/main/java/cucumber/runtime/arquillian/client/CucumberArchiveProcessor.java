@@ -1,8 +1,8 @@
 package cucumber.runtime.arquillian.client;
 
-import cucumber.api.junit.Cucumber;
 import cucumber.deps.com.thoughtworks.xstream.converters.ConverterRegistry;
 import cucumber.runtime.arquillian.ArquillianCucumber;
+import cucumber.runtime.arquillian.ArquillianTestngCucumber;
 import cucumber.runtime.arquillian.CukeSpace;
 import cucumber.runtime.arquillian.api.event.StepEvent;
 import cucumber.runtime.arquillian.backend.ArquillianBackend;
@@ -41,9 +41,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import static cucumber.runtime.arquillian.shared.IOs.slurp;
 import static cucumber.runtime.arquillian.locator.JarLocation.jarLocation;
 import static cucumber.runtime.arquillian.shared.ClassLoaders.load;
+import static cucumber.runtime.arquillian.shared.IOs.slurp;
 import static org.jboss.shrinkwrap.api.ShrinkWrap.create;
 
 public class CucumberArchiveProcessor implements ApplicationArchiveProcessor {
@@ -66,13 +66,15 @@ public class CucumberArchiveProcessor implements ApplicationArchiveProcessor {
 
         if (featureUrls.isEmpty()
                 || !LibraryContainer.class.isInstance(applicationArchive)) {
-            final RunWith runWith = testClass.getAnnotation(RunWith.class);
-            if (runWith == null || (!ArquillianCucumber.class.equals(runWith.value()) && !CukeSpace.class.equals(runWith.value()))) {
-                // not a cucumber test so skip enrichment
-                return;
-            } else {
-                // else let enrich it to avoid type not found error
-                Logger.getLogger(CucumberArchiveProcessor.class.getName()).info("No feature found for " + javaClass.getName());
+            if (!ArquillianCucumber.class.getName().equals(javaClass.getSuperclass().getName())) {
+                final RunWith runWith = testClass.getAnnotation(RunWith.class);
+                if (runWith == null || (!ArquillianCucumber.class.equals(runWith.value()) && !CukeSpace.class.equals(runWith.value()))) {
+                    // not a cucumber test so skip enrichment
+                    return;
+                } else {
+                    // else let enrich it to avoid type not found error
+                    Logger.getLogger(CucumberArchiveProcessor.class.getName()).info("No feature found for " + javaClass.getName());
+                }
             }
         }
 
@@ -172,8 +174,8 @@ public class CucumberArchiveProcessor implements ApplicationArchiveProcessor {
                 jarLocation(Mapper.class),
                 jarLocation(ResourceLoaderClassFinder.class),
                 jarLocation(ConverterRegistry.class),
-                jarLocation(JavaBackend.class),
-                jarLocation(Cucumber.class));
+                jarLocation(JavaBackend.class)/*,
+                jarLocation(TestNGCucumberRunner.class)*/);
         try {
             final File j8 = jarLocation(Thread.currentThread().getContextClassLoader().loadClass("cucumber.runtime.java8.LambdaGlueBase"));
             libraryContainer.addAsLibraries(j8);
@@ -225,8 +227,9 @@ public class CucumberArchiveProcessor implements ApplicationArchiveProcessor {
                 .addClass(Features.class)
                 .addClass(Glues.class)
                 .addClass(CucumberConfiguration.class)
-                .addClasses(ArquillianCucumber.class, CukeSpace.class)
+                .addClasses(ArquillianTestngCucumber.class)
                 .addPackage(ClientServerFiles.class.getPackage())
+                .addPackage("cucumber.api")
                 .addClass(CucumberContainerExtension.class)
                 // don't add JarLocation here or update Features#isServer()
         );
