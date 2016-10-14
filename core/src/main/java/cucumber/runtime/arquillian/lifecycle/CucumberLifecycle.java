@@ -17,10 +17,7 @@ import org.jboss.arquillian.test.spi.event.suite.BeforeClass;
 
 import java.io.*;
 import java.lang.annotation.Annotation;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
+import java.util.*;
 
 /**
  * These observers are for:
@@ -118,10 +115,15 @@ public class CucumberLifecycle {
 
             final ClassLoader loader = Thread.currentThread().getContextClassLoader();
             final ResourceLoaderClassFinder finder = new ResourceLoaderClassFinder(new MultiLoader(loader), loader);
-            //CUCUMBER_ANNOTATIONS.addAll(finder.getDescendants(Annotation.class, "cucumber.api"));
+            final List defaultList = Arrays.asList(Given.class, When.class, Then.class, And.class, But.class);
+            try {
+                CUCUMBER_ANNOTATIONS.addAll(finder.getDescendants(Annotation.class, "cucumber.api"));
+            } catch(Exception e) {
+                return defaultList;
+            }
 
             if (CUCUMBER_ANNOTATIONS.isEmpty()) {
-                return Arrays.asList(Given.class, When.class, Then.class, And.class, But.class);
+                return defaultList;
             }
             return CUCUMBER_ANNOTATIONS;
         }
