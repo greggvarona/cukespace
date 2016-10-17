@@ -1,9 +1,7 @@
 package cucumber.runtime.arquillian.client;
 
 import cucumber.deps.com.thoughtworks.xstream.converters.ConverterRegistry;
-import cucumber.runtime.arquillian.ArquillianCucumber;
 import cucumber.runtime.arquillian.ArquillianTestngCucumber;
-import cucumber.runtime.arquillian.CukeSpace;
 import cucumber.runtime.arquillian.api.event.StepEvent;
 import cucumber.runtime.arquillian.backend.ArquillianBackend;
 import cucumber.runtime.arquillian.config.CucumberConfiguration;
@@ -30,7 +28,6 @@ import org.jboss.shrinkwrap.api.container.LibraryContainer;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.impl.base.asset.AssetUtil;
 import org.jboss.shrinkwrap.impl.base.filter.IncludeRegExpPaths;
-import org.junit.runner.RunWith;
 
 import java.io.File;
 import java.lang.annotation.Annotation;
@@ -66,15 +63,18 @@ public class CucumberArchiveProcessor implements ApplicationArchiveProcessor {
 
         if (featureUrls.isEmpty()
                 || !LibraryContainer.class.isInstance(applicationArchive)) {
-            if (!ArquillianCucumber.class.getName().equals(javaClass.getSuperclass().getName())) {
-                final RunWith runWith = testClass.getAnnotation(RunWith.class);
+            if (!ArquillianTestngCucumber.class.getName().equals(javaClass.getSuperclass().getName())) {
+                return;
+                /*final RunWith runWith = testClass.getAnnotation(RunWith.class);
                 if (runWith == null || (!ArquillianCucumber.class.equals(runWith.value()) && !CukeSpace.class.equals(runWith.value()))) {
                     // not a cucumber test so skip enrichment
                     return;
                 } else {
                     // else let enrich it to avoid type not found error
                     Logger.getLogger(CucumberArchiveProcessor.class.getName()).info("No feature found for " + javaClass.getName());
-                }
+                }*/
+            } else {
+                Logger.getLogger(CucumberArchiveProcessor.class.getName()).info("No feature found for " + javaClass.getName());
             }
         }
 
